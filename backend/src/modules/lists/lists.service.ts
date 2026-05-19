@@ -31,15 +31,13 @@ const listItemSelect = {
   },
 } as const;
 
-/**
- * Liste sırasını güncelle
- */
+
 export async function reorderListItems(
   userId: string,
   listId: string,
   input: ReorderItemsInput,
 ) {
-  // Liste sahibi mi kontrol et
+ 
   const list = await prisma.list.findUnique({
     where: { id: listId },
     select: { userId: true },
@@ -53,7 +51,7 @@ export async function reorderListItems(
     throw new ForbiddenError('Bu listeyi düzenleme izniniz yok');
   }
 
-  // Tüm item'ları transaction'da güncelle
+  
   const updatedItems = await prisma.$transaction(
     input.items.map((item) =>
       prisma.listItem.update({
@@ -83,9 +81,7 @@ export async function reorderListItems(
   };
 }
 
-/**
- * Tek liste detayını getir
- */
+
 export async function getListDetail(
   listId: string,
   userId: string | undefined,
@@ -106,12 +102,12 @@ export async function getListDetail(
     throw new NotFoundError('Liste bulunamadı');
   }
 
-  // Private liste kontrolü - sahibi değilse göremez
+ 
   if (list.visibility === 'PRIVATE' && list.userId !== userId) {
     throw new ForbiddenError('Bu liste özeldir');
   }
 
-  // Geçerli kullanıcı tarafından beğeni yapılmış mı kontrol et
+ 
   let likedByMe = false;
   if (userId) {
     const like = await prisma.listLike.findUnique({
@@ -139,11 +135,10 @@ export async function getListDetail(
   };
 }
 
-/**
- * Listeyi beğen veya beğeniyi kaldır (toggle)
- */
+
+
 export async function toggleListLike(userId: string, listId: string) {
-  // Liste var mı kontrol et
+  
   const list = await prisma.list.findUnique({
     where: { id: listId },
     select: { id: true, userId: true, visibility: true },
@@ -153,12 +148,12 @@ export async function toggleListLike(userId: string, listId: string) {
     throw new NotFoundError('Liste bulunamadı');
   }
 
-  // Public değilse ve sahibi değilse beğenemez
+ 
   if (list.visibility === 'PRIVATE' && list.userId !== userId) {
     throw new ForbiddenError('Bu liste özeldir');
   }
 
-  // Zaten beğendi mi kontrol et
+
   const existingLike = await prisma.listLike.findUnique({
     where: {
       listId_userId: { listId, userId },
@@ -166,12 +161,12 @@ export async function toggleListLike(userId: string, listId: string) {
   });
 
   if (existingLike) {
-    // Beğeni kaldır
+    
     await prisma.listLike.delete({
       where: { id: existingLike.id },
     });
   } else {
-    // Beğeni ekle
+    
     await prisma.listLike.create({
       data: {
         listId,
@@ -180,7 +175,7 @@ export async function toggleListLike(userId: string, listId: string) {
     });
   }
 
-  // Güncellenmiş beğeni sayısını getir
+ 
   const likeCount = await prisma.listLike.count({
     where: { listId },
   });
@@ -191,9 +186,7 @@ export async function toggleListLike(userId: string, listId: string) {
   };
 }
 
-/**
- * Popüler listeleri getir (zaten mevcut - düzeltilmiş)
- */
+
 export async function listPopularLists(limit = 10, userId: string | undefined) {
   const lists = await prisma.list.findMany({
     where: { visibility: 'PUBLIC' },
