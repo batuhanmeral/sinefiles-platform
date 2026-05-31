@@ -172,11 +172,11 @@ export default function ContentDetailPage({ type }: ContentDetailPageProps) {
       )}
 
       {/* Benzer / önerilen içerikler */}
-      {data.recommendations.length > 0 && (
+      {(data.recommendations?.length ?? 0) > 0 && (
         <section>
           <div className="section-title"><h2>{t('content.similar')}</h2></div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
-            {data.recommendations.map((item) => (
+            {data.recommendations?.map((item) => (
               <ContentCard key={`${item.type}-${item.id}`} item={item} showType />
             ))}
           </div>
