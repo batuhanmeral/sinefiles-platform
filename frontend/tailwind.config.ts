@@ -10,13 +10,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        // %60 — Ana arka plan rengi (koyu lacivert)
+        // %60 — Ana arka plan (Letterboxd tarzı mavi-gri koyu zemin)
         surface: {
-          DEFAULT: '#0F172A',
+          DEFAULT: '#14181C',
           // %30 — İkincil arka plan (kartlar, navbar, inceleme konteynerleri)
-          raised: '#1E293B',
-          muted: '#334155',
-          ring: '#475569',
+          raised: '#2C3440',
+          muted: '#3F4B5B',
+          ring: '#566678',
         },
         // %10 — Vurgu rengi (butonlar, aktif durumlar, önemli vurgular)
         accent: {
@@ -25,11 +25,11 @@ export default {
           600: '#059669',
           700: '#047857',
         },
-        // Metin renkleri
+        // Metin renkleri (Letterboxd tarzı yumuşak mavi-gri)
         ink: {
-          DEFAULT: '#F8FAFC', // Ana metin (parlak beyaz)
-          muted: '#94A3B8',   // İkincil metin (soluk gri)
-          dim: '#64748B',     // Üçüncül metin (koyu gri)
+          DEFAULT: '#F5F7FA', // Ana metin (kırık beyaz)
+          muted: '#99AABB',   // İkincil metin (mavi-gri)
+          dim: '#678',        // Üçüncül metin (soluk mavi-gri)
         },
         // Puan bazlı renk kodlaması
         rating: {
@@ -47,7 +47,7 @@ export default {
       boxShadow: {
         glow: '0 10px 40px -10px rgba(16, 185, 129, 0.45)',          // Yeşil parlama
         'glow-cyan': '0 10px 40px -10px rgba(6, 182, 212, 0.45)',    // Cyan parlama
-        card: '0 12px 30px -12px rgba(0, 0, 0, 0.6)',                // Kart gölgesi
+        card: '0 16px 40px -16px rgba(0, 0, 0, 0.85)',               // Kart gölgesi (daha derin)
       },
       backdropBlur: {
         xs: '2px',

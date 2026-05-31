@@ -22,15 +22,15 @@ export function RootLayout() {
   useScrollToTop();
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Sabit navbar - sayfanın üstüne yapışık, glassmorphism efektli */}
-      <header className="sticky top-0 z-30 border-b border-white/5 bg-surface/70 backdrop-blur-xl">
+      {/* Sabit navbar - sayfanın üstüne yapışık, opak arka plan */}
+      <header className="sticky top-0 z-30 border-b border-white/5 bg-surface">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
           {/* Logo - gradient renkli SineFiles yazısı */}
-          <Link to="/" className="group flex items-center font-display text-2xl sm:text-3xl font-black drop-shadow-md transition-transform duration-300 hover:scale-[1.02]">
-            <span className="bg-gradient-to-r from-amber-300 via-rose-200 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(251,191,36,0.45)]">
+          <Link to="/" className="group flex items-center font-display text-2xl sm:text-3xl font-black transition-transform duration-300 hover:scale-[1.02]">
+            <span className="bg-gradient-to-r from-amber-300 via-rose-200 to-amber-400 bg-clip-text text-transparent">
               SINE
             </span>
-            <span className="bg-gradient-to-r from-cyan-400 via-emerald-300 to-emerald-500 bg-clip-text font-black text-transparent drop-shadow-[0_0_18px_rgba(34,211,238,0.55)]">
+            <span className="bg-gradient-to-r from-cyan-400 via-emerald-300 to-emerald-500 bg-clip-text font-black text-transparent">
               FILES
             </span>
           </Link>

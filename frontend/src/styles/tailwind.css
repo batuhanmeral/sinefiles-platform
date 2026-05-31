@@ -56,9 +56,9 @@
   }
 
   /* Kart Yüzeyleri (%30 katman) */
-  /* Temel kart: yuvarlatılmış köşeler, yükseltilmiş arka plan */
+  /* Temel kart: yuvarlatılmış köşeler, yükseltilmiş arka plan, koyu zeminde hafif gölge */
   .card {
-    @apply rounded-xl bg-surface-raised p-4 ring-1 ring-white/5;
+    @apply rounded-xl bg-surface-raised p-4 ring-1 ring-white/5 shadow-card;
   }
   /* Etkileşimli kart: hover'da yukarı kayma ve glow efekti */
   .card-hover {
