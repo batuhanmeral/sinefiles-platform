@@ -7,6 +7,8 @@ import {
   detailQuerySchema,
   discoverSchema,
   genresSchema,
+  personParamsSchema,
+  personQuerySchema,
   popularSchema,
   searchSchema,
   trendingSchema,
@@ -96,6 +98,18 @@ const genresHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
+// Bir kişinin (oyuncu) profilini ve oynadığı yapımları getirir
+const personHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const { personId } = req.params as unknown as { personId: number };
+    const { language } = req.query as unknown as { language: tmdb.Lang };
+    const data = await tmdb.person(personId, language);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // Belirli bir TMDB ID'ye sahip içeriğin detaylı bilgilerini (cast, videolar vs.) getirir
 const detailHandler: RequestHandler = async (req, res, next) => {
   try {
@@ -114,6 +128,14 @@ contentRouter.get('/popular', validate(popularSchema, 'query'), popularHandler);
 contentRouter.get('/upcoming', validate(upcomingSchema, 'query'), upcomingHandler);
 contentRouter.get('/discover', validate(discoverSchema, 'query'), discoverHandler);
 contentRouter.get('/genres', validate(genresSchema, 'query'), genresHandler);
+// Not: bu rota /:type/:tmdbId'den ÖNCE tanımlanmalı, aksi halde "person" bir tür
+// (type) olarak yakalanır.
+contentRouter.get(
+  '/person/:personId',
+  validate(personParamsSchema, 'params'),
+  validate(personQuerySchema, 'query'),
+  personHandler,
+);
 contentRouter.get(
   '/:type/:tmdbId',
   validate(detailParamsSchema, 'params'),

@@ -58,3 +58,11 @@ export const genresSchema = z.object({
   type: typeSchema.default('movie'),
   language: langSchema,
 });
+
+export const personParamsSchema = z.object({
+  personId: z.coerce.number().int().positive(),
+});
+
+export const personQuerySchema = z.object({
+  language: langSchema,
+});

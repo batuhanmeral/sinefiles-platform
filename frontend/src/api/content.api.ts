@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { ContentDetail, ContentPage, Genre, Lang, TmdbScope, TmdbType } from '@/types/content';
+import type { ContentDetail, ContentPage, Genre, Lang, Person, TmdbScope, TmdbType } from '@/types/content';
 
 // i18n dil kodunu TMDB API'nin beklediği dil formatına dönüştürür
 function langFromI18n(i18nLang: string | undefined): Lang {
@@ -76,6 +76,14 @@ export const contentApi = {
   genres: async (type: TmdbType, language: Lang) => {
     const { data } = await apiClient.get<Genre[]>('/content/genres', {
       params: { type, language },
+    });
+    return data;
+  },
+
+  // Bir oyuncunun profilini ve oynadığı yapımları getirir
+  person: async (personId: number, language: Lang) => {
+    const { data } = await apiClient.get<Person>(`/content/person/${personId}`, {
+      params: { language },
     });
     return data;
   },

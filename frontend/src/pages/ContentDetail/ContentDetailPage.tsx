@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { contentApi, langFromI18n } from '@/api/content.api';
@@ -154,7 +154,7 @@ export default function ContentDetailPage({ type }: ContentDetailPageProps) {
           {/* Yatay kaydırılabilir oyuncu kartları */}
           <div ref={castScrollRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 scrollbar-none [&::-webkit-scrollbar]:hidden">
             {data.cast.map((member) => (
-              <article key={member.id} className="card-hover w-36 shrink-0 snap-start overflow-hidden p-0 ring-white/5 sm:w-40">
+              <Link key={member.id} to={`/person/${member.id}`} className="card-hover block w-36 shrink-0 snap-start overflow-hidden p-0 ring-white/5 sm:w-40" aria-label={member.name}>
                 {member.profilePath ? (
                   <img src={profile(member.profilePath, 'w185')!} alt={member.name} className="aspect-[2/3] w-full object-cover" loading="lazy" />
                 ) : (
@@ -164,7 +164,7 @@ export default function ContentDetailPage({ type }: ContentDetailPageProps) {
                   <p className="truncate text-sm font-semibold text-ink">{member.name}</p>
                   <p className="truncate text-xs text-ink-muted">{member.character}</p>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </section>

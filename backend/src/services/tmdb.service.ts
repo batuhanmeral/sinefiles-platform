@@ -80,6 +80,32 @@ interface RawDetailResponse extends RawItem {
   in_production?: boolean;
 }
 
+// Bir kişinin (oyuncu) profil bilgileri ve oynadığı yapımlar
+export interface TmdbPerson {
+  id: number;
+  name: string;
+  profilePath: string | null;
+  biography: string;
+  knownForDepartment: string | null;
+  birthday: string | null;
+  placeOfBirth: string | null;
+  // Oynadığı film/diziler (her biri karaktere ek olarak normalize edilmiş içerik)
+  credits: (TmdbItem & { character: string })[];
+}
+
+interface RawPersonResponse {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  biography?: string;
+  known_for_department?: string | null;
+  birthday?: string | null;
+  place_of_birth?: string | null;
+  combined_credits?: {
+    cast?: (RawItem & { media_type?: string; character?: string })[];
+  };
+}
+
 const BASE = env.TMDB_BASE_URL;
 const KEY = env.TMDB_API_KEY;
 const TTL = env.TMDB_CACHE_TTL_SECONDS;
@@ -274,6 +300,44 @@ export async function detail(type: TmdbType, id: number, language: Lang): Promis
         .filter((v) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'))
         .slice(0, 3)
         .map((v) => ({ key: v.key, site: v.site, type: v.type, name: v.name })),
+    };
+  });
+}
+
+// Bir kişinin (oyuncu) profil bilgilerini ve oynadığı tüm film/dizileri getirir.
+// combined_credits tek istekte tüm yapımları döndürür; sayfalama yoktur, bu yüzden
+// filtreleme/sıralama ön yüzde (client-side) yapılır. Aynı yapımda birden fazla
+// rolde görünen kişiler için (id+type) bazında tekilleştirme uygulanır.
+export async function person(id: number, language: Lang): Promise<TmdbPerson> {
+  return cached(`tmdb:person:${id}:${language}`, TTL, async () => {
+    const raw = await tmdbFetch<RawPersonResponse>(`/person/${id}`, {
+      language,
+      append_to_response: 'combined_credits',
+    });
+
+    const seen = new Set<string>();
+    const credits = (raw.combined_credits?.cast ?? [])
+      .filter((c) => c.id && (c.media_type === 'movie' || c.media_type === 'tv'))
+      .map((c) => {
+        const item = normalize(c, c.media_type as TmdbType);
+        return { ...item, character: c.character ?? '' };
+      })
+      .filter((c) => {
+        const key = `${c.type}-${c.id}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+    return {
+      id: raw.id,
+      name: raw.name,
+      profilePath: raw.profile_path,
+      biography: raw.biography ?? '',
+      knownForDepartment: raw.known_for_department ?? null,
+      birthday: raw.birthday ?? null,
+      placeOfBirth: raw.place_of_birth ?? null,
+      credits,
     };
   });
 }

@@ -115,6 +115,21 @@
     "empty": "Bu kullanıcı henüz inceleme yazmamış.",
     "notFound": "Kullanıcı bulunamadı."
   },
+  "person": {
+    "notFound": "Oyuncu bulunamadı.",
+    "filmography": "Filmografi",
+    "knownFor": "Bilinen alan",
+    "born": "Doğum",
+    "placeOfBirth": "Doğum yeri",
+    "biography": "Biyografi",
+    "all": "Hepsi",
+    "sortName": "İsme göre (A-Z)",
+    "noResults": "Bu filtreye uyan yapım bulunamadı.",
+    "creditCount_one": "{{count}} yapım",
+    "creditCount_other": "{{count}} yapım",
+    "showing_one": "{{count}} yapım gösteriliyor",
+    "showing_other": "{{count}} yapım gösteriliyor"
+  },
   "settings": {
     "title": "Ayarlar",
     "subtitle": "Hesap ve uygulama tercihlerini yönet.",

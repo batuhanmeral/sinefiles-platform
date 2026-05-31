@@ -51,6 +51,23 @@ export interface Genre {
   name: string;
 }
 
+// Bir oyuncunun oynadığı tek bir yapım (içerik + canlandırdığı karakter)
+export interface PersonCredit extends ContentItem {
+  character: string;
+}
+
+// Oyuncu (kişi) profili: kişisel bilgiler + filmografi
+export interface Person {
+  id: number;
+  name: string;
+  profilePath: string | null;
+  biography: string;
+  knownForDepartment: string | null;
+  birthday: string | null;
+  placeOfBirth: string | null;
+  credits: PersonCredit[];
+}
+
 // İçeriğin detaylı bilgilerini içeren genişletilmiş arayüz
 // Temel ContentItem'a ek olarak oyuncular, fragmanlar ve topluluk puanları içerir
 export interface ContentDetail extends ContentItem {

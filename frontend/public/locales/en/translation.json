@@ -115,6 +115,21 @@
     "empty": "No reviews yet from this user.",
     "notFound": "User not found."
   },
+  "person": {
+    "notFound": "Actor not found.",
+    "filmography": "Filmography",
+    "knownFor": "Known for",
+    "born": "Born",
+    "placeOfBirth": "Place of birth",
+    "biography": "Biography",
+    "all": "All",
+    "sortName": "By name (A-Z)",
+    "noResults": "No titles match this filter.",
+    "creditCount_one": "{{count}} title",
+    "creditCount_other": "{{count}} titles",
+    "showing_one": "Showing {{count}} title",
+    "showing_other": "Showing {{count}} titles"
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your account and app preferences.",
