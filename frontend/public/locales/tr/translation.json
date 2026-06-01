@@ -261,16 +261,9 @@
       "mostLiked": "En Beğenilen",
       "mostCommented": "En Çok Yorumlanan"
     },
-    "community": {
-      "title": "Topluluktan",
-      "subtitle": "Akışta aktif sinefiller",
-      "reviewCount_one": "{{count}} inceleme",
-      "reviewCount_other": "{{count}} inceleme"
-    },
-    "stats": {
-      "reviews": "İnceleme",
-      "cinephiles": "Sinefil",
-      "avg": "Ort. Puan"
+    "friends": {
+      "title": "Arkadaşlarım",
+      "subtitle": "Takip ettiğin kişiler"
     }
   },
   "footer": {

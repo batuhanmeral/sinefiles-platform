@@ -261,16 +261,9 @@
       "mostLiked": "Most liked",
       "mostCommented": "Most discussed"
     },
-    "community": {
-      "title": "From the community",
-      "subtitle": "Active cinephiles in the feed",
-      "reviewCount_one": "{{count}} review",
-      "reviewCount_other": "{{count}} reviews"
-    },
-    "stats": {
-      "reviews": "Reviews",
-      "cinephiles": "Cinephiles",
-      "avg": "Avg. rating"
+    "friends": {
+      "title": "My Friends",
+      "subtitle": "People you follow"
     }
   },
   "footer": {

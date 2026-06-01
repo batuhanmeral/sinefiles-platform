@@ -1,6 +1,7 @@
 import { apiClient } from './client';
 import type { AuthUser, FavoriteContentRef, Language } from '@/types/auth';
 import type { Lang, UserFavorites } from '@/types/content';
+import type { ReviewUser } from '@/types/review';
 import type { PopularReview } from './reviews.api';
 
 // Profil güncelleme için girdi alanları
@@ -63,6 +64,12 @@ export const usersApi = {
     const { data } = await apiClient.get<PopularReview[]>(`/users/${username}/reviews`, {
       params: { limit },
     });
+    return data;
+  },
+
+  // Giriş yapan kullanıcının takip ettiği kişiler (akış "Arkadaşlarım" bölümü)
+  following: async (): Promise<ReviewUser[]> => {
+    const { data } = await apiClient.get<ReviewUser[]>('/users/me/following');
     return data;
   },
 };

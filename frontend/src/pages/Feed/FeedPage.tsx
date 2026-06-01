@@ -5,7 +5,7 @@ import { reviewsApi, type PopularReview } from '@/api/reviews.api';
 import { useAuthStore } from '@/features/auth/authStore';
 import { FeedReviewCard } from '@/features/feed/FeedReviewCard';
 import { FeedCardSkeleton } from '@/features/feed/FeedCardSkeleton';
-import { FeedCommunity, FeedStats } from '@/features/feed/FeedCommunity';
+import { FeedCommunity } from '@/features/feed/FeedCommunity';
 import {
   FeedFilters,
   FEED_WINDOWS,
@@ -106,11 +106,10 @@ export default function FeedPage() {
         )}
       </div>
 
-      {/* SAĞ RAY — topluluk (xl+) */}
+      {/* SAĞ RAY — arkadaşlarım (xl+) */}
       <aside className="hidden w-72 shrink-0 xl:block">
         <div className="sticky top-20 space-y-5">
-          <FeedStats reviews={reviews} />
-          <FeedCommunity reviews={reviews} />
+          <FeedCommunity />
         </div>
       </aside>
     </div>
