@@ -222,6 +222,8 @@
     "subtitle": "Topluluğun son film incelemeleri.",
     "loading": "Yükleniyor…",
     "empty": "Bu zaman aralığında henüz gönderi yok.",
+    "emptyFollowing": "Henüz kimseyi takip etmiyorsun ya da takip ettiklerin bu aralıkta inceleme yazmamış.",
+    "loginForFollowing": "Takip akışı için giriş yap.",
     "error": "Akış yüklenemedi. Birazdan tekrar dene.",
     "readMore": "Devamını Gör",
     "readLess": "Daha Az",
@@ -243,7 +245,6 @@
       "month": "Ay",
       "all": "Tümü"
     },
-    "comingSoon": "Yakında",
     "filters": {
       "title": "Filtrele",
       "source": "Kaynak",

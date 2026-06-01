@@ -222,6 +222,8 @@
     "subtitle": "The latest film reviews from the community.",
     "loading": "Loading…",
     "empty": "No posts in this time range yet.",
+    "emptyFollowing": "You're not following anyone yet, or those you follow haven't reviewed anything in this range.",
+    "loginForFollowing": "Sign in to see your following feed.",
     "error": "Couldn't load the feed. Try again shortly.",
     "readMore": "Read more",
     "readLess": "Show less",
@@ -243,7 +245,6 @@
       "month": "Month",
       "all": "All"
     },
-    "comingSoon": "Soon",
     "filters": {
       "title": "Filter",
       "source": "Source",
