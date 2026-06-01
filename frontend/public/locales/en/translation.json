@@ -115,6 +115,14 @@
     "empty": "No reviews yet from this user.",
     "notFound": "User not found."
   },
+  "theme": {
+    "title": "Theme",
+    "help": "Choose a light or dark interface appearance.",
+    "dark": "Dark",
+    "light": "Light",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme"
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your account and app preferences.",

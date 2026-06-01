@@ -5,6 +5,46 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tema renk değişkenleri (RGB üçlüleri — Tailwind alpha modifier'ları için).
+   :root = koyu tema (varsayılan). html.light = açık tema override'ı. */
+:root {
+  --color-surface: 20 24 28;        /* #14181C */
+  --color-surface-raised: 44 52 64; /* #2C3440 */
+  --color-surface-muted: 63 75 91;  /* #3F4B5B */
+  --color-surface-ring: 86 102 120; /* #566678 */
+
+  --color-accent: 16 185 129;       /* #10B981 */
+  --color-accent-cyan: 6 182 212;   /* #06B6D4 */
+  --color-accent-600: 5 150 105;    /* #059669 */
+  --color-accent-700: 4 120 87;     /* #047857 */
+
+  --color-ink: 245 247 250;         /* #F5F7FA */
+  --color-ink-muted: 153 170 187;   /* #99AABB */
+  --color-ink-dim: 102 119 136;     /* #667788 */
+
+  --color-rating-low: 249 115 22;   /* #F97316 */
+  --color-rating-mid: 234 179 8;    /* #EAB308 */
+  --color-rating-high: 16 185 129;  /* #10B981 */
+}
+
+/* Açık tema: yüzeyler aydınlanır, metin koyulaşır; accent/rating aynı kalır */
+html.light {
+  --color-surface: 247 248 250;     /* #F7F8FA — sayfa zemini */
+  --color-surface-raised: 255 255 255; /* #FFFFFF — kartlar */
+  --color-surface-muted: 230 234 240;  /* #E6EAF0 */
+  --color-surface-ring: 203 210 220;   /* #CBD2DC */
+
+  --color-ink: 20 24 28;            /* #14181C — koyu metin */
+  --color-ink-muted: 90 102 117;    /* #5A6675 */
+  --color-ink-dim: 138 149 165;     /* #8A95A5 */
+
+  /* Açık temada vurgu rengi yeşil yerine mavi */
+  --color-accent: 37 99 235;        /* #2563EB — blue-600 */
+  --color-accent-cyan: 14 165 233;  /* #0EA5E9 — sky-500 */
+  --color-accent-600: 29 78 216;    /* #1D4ED8 — blue-700 */
+  --color-accent-700: 30 64 175;    /* #1E40AF — blue-800 */
+}
+
 /* Temel Stiller */
 @layer base {
   /* HTML kök elementinin minimum yüksekliğini ayarla */
@@ -15,6 +55,7 @@
   /* Gövde için arka plan rengi ve metin rengi — tek düz renk */
   body {
     @apply min-h-full bg-surface text-ink font-sans;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
   /* Metin seçim rengi */
   ::selection {
@@ -68,13 +109,13 @@
   /* Glassmorphism Efekti */
   /* Yarı saydam arka plan, bulanıklık ve doygunluk efekti */
   .glass {
-    @apply bg-surface-raised/60 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-white/10;
+    @apply bg-surface-raised/60 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-surface-ring/50;
   }
 
   /* Form Girdileri */
   /* Metin girdisi: tam genişlik, kenarlık, odak efektleri */
   .input {
-    @apply w-full rounded-lg border border-surface-ring/40 bg-surface-raised px-3.5 py-2.5
+    @apply w-full rounded-lg border border-surface-ring/70 bg-surface-raised px-3.5 py-2.5
            text-sm text-ink placeholder:text-ink-dim
            focus:border-accent focus:bg-surface-muted/40 focus:outline-none;
   }
@@ -101,18 +142,19 @@
 
   /* Film Posteri (grid içinde kullanılır) */
   /* Kapsayıcı article'a `group` sınıfı eklenmelidir */
+  /* Not: posterler temadan bağımsız olarak HER ZAMAN koyu kalır (sabit renkler) */
   .poster {
     @apply relative aspect-[2/3] overflow-hidden rounded-lg
-           bg-surface-muted ring-1 ring-white/5 transition-all duration-300 ease-spring
+           bg-[#1B1F2B] ring-1 ring-white/5 transition-all duration-300 ease-spring
            hover:-translate-y-1.5 hover:ring-accent/50 hover:shadow-glow;
   }
   /* Poster görseli: kapsayıcıyı tamamen doldurur, hover'da yakınlaşır */
   .poster-img {
     @apply h-full w-full object-cover transition-transform duration-500;
   }
-  /* Poster üzerindeki gradient kaplama (altyazı okunabilirliği için) */
+  /* Poster üzerindeki gradient kaplama (altyazı okunabilirliği için) — sabit koyu */
   .poster-overlay {
-    @apply pointer-events-none absolute inset-0 bg-gradient-to-t from-surface/95 via-surface/40 to-transparent
+    @apply pointer-events-none absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent
            opacity-90 transition-opacity duration-300;
   }
 }

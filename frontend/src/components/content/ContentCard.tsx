@@ -30,8 +30,8 @@ export function ContentCard({ item, showType = false }: Props) {
           loading="lazy"
         />
       ) : (
-        <div className="flex h-full w-full items-end bg-gradient-to-br from-surface-muted to-surface-raised p-4">
-          <span className="font-display text-xl font-extrabold text-ink line-clamp-3">
+        <div className="flex h-full w-full items-end bg-gradient-to-br from-[#2C3440] to-[#14181C] p-4">
+          <span className="font-display text-xl font-extrabold text-white line-clamp-3">
             {item.title}
           </span>
         </div>
@@ -40,19 +40,19 @@ export function ContentCard({ item, showType = false }: Props) {
       {/* Poster üzerindeki gradient kaplama */}
       <div className="poster-overlay group-hover:opacity-100" />
 
-      {/* Film/Dizi türü etiketi (opsiyonel) */}
+      {/* Film/Dizi türü etiketi (opsiyonel) — poster koyu olduğu için sabit renkler */}
       {showType && (
-        <span className="absolute left-2 top-2 rounded-full bg-surface/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ink-muted backdrop-blur">
+        <span className="absolute left-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/80 backdrop-blur">
           {item.type === 'movie' ? 'Film' : 'Dizi'}
         </span>
       )}
 
-      {/* Posterin alt kısmındaki başlık, yıl ve puan bilgileri */}
+      {/* Posterin alt kısmındaki başlık, yıl ve puan bilgileri — poster üstünde hep beyaz */}
       <div className="absolute inset-x-0 bottom-0 p-3">
         <div className="flex items-end justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="truncate font-semibold text-ink">{item.title}</h3>
-            {year && <p className="text-xs text-ink-muted">{year}</p>}
+            <h3 className="truncate font-semibold text-white">{item.title}</h3>
+            {year && <p className="text-xs text-white/70">{year}</p>}
           </div>
           {fiveStar > 0 && <RatingStars value={fiveStar} size="sm" />}
         </div>

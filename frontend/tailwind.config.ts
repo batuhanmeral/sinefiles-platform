@@ -10,32 +10,34 @@ export default {
   theme: {
     extend: {
       colors: {
-        // %60 — Ana arka plan (Letterboxd tarzı mavi-gri koyu zemin)
+        // Renkler CSS değişkenlerinden gelir (bkz. tailwind.css :root / html.light)
+        // Böylece açık/koyu tema arasında geçiş yapılabilir; alpha modifier'lar korunur.
+        // %60 — Ana arka plan
         surface: {
-          DEFAULT: '#14181C',
+          DEFAULT: 'rgb(var(--color-surface) / <alpha-value>)',
           // %30 — İkincil arka plan (kartlar, navbar, inceleme konteynerleri)
-          raised: '#2C3440',
-          muted: '#3F4B5B',
-          ring: '#566678',
+          raised: 'rgb(var(--color-surface-raised) / <alpha-value>)',
+          muted: 'rgb(var(--color-surface-muted) / <alpha-value>)',
+          ring: 'rgb(var(--color-surface-ring) / <alpha-value>)',
         },
         // %10 — Vurgu rengi (butonlar, aktif durumlar, önemli vurgular)
         accent: {
-          DEFAULT: '#10B981',
-          cyan: '#06B6D4',
-          600: '#059669',
-          700: '#047857',
+          DEFAULT: 'rgb(var(--color-accent) / <alpha-value>)',
+          cyan: 'rgb(var(--color-accent-cyan) / <alpha-value>)',
+          600: 'rgb(var(--color-accent-600) / <alpha-value>)',
+          700: 'rgb(var(--color-accent-700) / <alpha-value>)',
         },
-        // Metin renkleri (Letterboxd tarzı yumuşak mavi-gri)
+        // Metin renkleri
         ink: {
-          DEFAULT: '#F5F7FA', // Ana metin (kırık beyaz)
-          muted: '#99AABB',   // İkincil metin (mavi-gri)
-          dim: '#678',        // Üçüncül metin (soluk mavi-gri)
+          DEFAULT: 'rgb(var(--color-ink) / <alpha-value>)',
+          muted: 'rgb(var(--color-ink-muted) / <alpha-value>)',
+          dim: 'rgb(var(--color-ink-dim) / <alpha-value>)',
         },
         // Puan bazlı renk kodlaması
         rating: {
-          low: '#F97316',     // Düşük puan (turuncu)
-          mid: '#EAB308',     // Orta puan (sarı)
-          high: '#10B981',    // Yüksek puan (yeşil)
+          low: 'rgb(var(--color-rating-low) / <alpha-value>)',
+          mid: 'rgb(var(--color-rating-mid) / <alpha-value>)',
+          high: 'rgb(var(--color-rating-high) / <alpha-value>)',
         },
       },
       // Yazı tipi aileleri

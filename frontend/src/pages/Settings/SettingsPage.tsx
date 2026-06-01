@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
 import { useAuthStore } from '@/features/auth/authStore';
+import { useThemeStore, type Theme } from '@/features/theme/themeStore';
 import { usersApi } from '@/api/users.api';
 import type { Language } from '@/types/auth';
 
@@ -47,6 +48,8 @@ export default function SettingsPage() {
 
       {/* Profil bilgileri düzenleme kartı */}
       <ProfileCard />
+      {/* Tema (açık/koyu) tercihi kartı */}
+      <ThemeCard />
       {/* Şifre değiştirme kartı */}
       <PasswordCard />
       {/* Dil tercihi kartı */}
@@ -215,6 +218,36 @@ export default function SettingsPage() {
       </section>
     );
   }
+}
+
+// Tema (açık/koyu) tercihi kartı — anında uygulanır ve localStorage'da saklanır
+function ThemeCard() {
+  const { t } = useTranslation();
+  const theme = useThemeStore((s) => s.theme);
+  const setTheme = useThemeStore((s) => s.setTheme);
+  const options: { value: Theme; label: string }[] = [
+    { value: 'dark', label: t('theme.dark') },
+    { value: 'light', label: t('theme.light') },
+  ];
+
+  return (
+    <section className="card">
+      <h2 className="text-base font-semibold text-ink">{t('theme.title')}</h2>
+      <p className="mt-1 text-sm text-ink-muted">{t('theme.help')}</p>
+      <div className="mt-3 flex gap-2">
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => setTheme(opt.value)}
+            className={theme === opt.value ? 'btn-primary' : 'btn-outline'}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 // Dil tercihi kartı bileşeni

@@ -1,6 +1,7 @@
 import { Outlet, Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 import { SearchBar } from './SearchBar';
 import { ProfileMenu } from './ProfileMenu';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
@@ -56,6 +57,9 @@ export function RootLayout() {
 
             {/* Dil değiştirme butonu */}
             <LanguageSwitcher />
+
+            {/* Açık/koyu tema değiştirme butonu */}
+            <ThemeToggle />
 
             {/* Arama çubuğu */}
             <SearchBar />

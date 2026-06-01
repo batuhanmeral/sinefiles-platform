@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { App } from './app/App';
 import './styles/tailwind.css';
 import './lib/i18n';
+// Kalıcı temayı (açık/koyu) uygulama render edilmeden önce <html>'e uygula
+import './features/theme/themeStore';
 
 // Uygulamanın bağlanacağı kök DOM elementini bul
 const root = document.getElementById('root');

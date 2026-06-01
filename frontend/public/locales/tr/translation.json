@@ -115,6 +115,14 @@
     "empty": "Bu kullanıcı henüz inceleme yazmamış.",
     "notFound": "Kullanıcı bulunamadı."
   },
+  "theme": {
+    "title": "Tema",
+    "help": "Arayüz görünümünü açık veya koyu olarak seç.",
+    "dark": "Koyu",
+    "light": "Açık",
+    "switchToLight": "Açık temaya geç",
+    "switchToDark": "Koyu temaya geç"
+  },
   "settings": {
     "title": "Ayarlar",
     "subtitle": "Hesap ve uygulama tercihlerini yönet.",
