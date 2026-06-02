@@ -1,8 +1,8 @@
 import type { RequestHandler } from 'express';
 import multer from 'multer';
 
-import { AVATAR_DIR } from '../../config/uploads.js';
-import { BadRequestError } from '../../utils/errors.js';
+import { AVATAR_DIR } from '../config/uploads.js';
+import { BadRequestError } from '../utils/errors.js';
 
 // İzin verilen görsel türleri → dosya uzantısı
 const MIME_EXT: Record<string, string> = {
