@@ -106,14 +106,19 @@
   },
   "profile": {
     "follow": "Takip et",
-    "followComingSoon": "Takip özelliği Faz 5'te aktifleşecek",
+    "unfollow": "Takibi bırak",
     "editProfile": "Profilimi düzenle",
     "watched": "İzlenenler",
     "reviews": "İnceleme",
     "followers": "Takipçi",
     "following": "Takip",
     "empty": "Bu kullanıcı henüz inceleme yazmamış.",
-    "notFound": "Kullanıcı bulunamadı."
+    "notFound": "Kullanıcı bulunamadı.",
+    "close": "Kapat",
+    "listLoading": "Yükleniyor…",
+    "listError": "Liste yüklenemedi.",
+    "noFollowers": "Henüz takipçi yok.",
+    "noFollowing": "Henüz kimseyi takip etmiyor."
   },
   "settings": {
     "title": "Ayarlar",

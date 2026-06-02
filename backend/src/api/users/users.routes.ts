@@ -1,7 +1,9 @@
 import { Router, type RequestHandler } from 'express';
 
+import { Prisma } from '@prisma/client';
+
 import { prisma } from '../../config/db.js';
-import { requireAuth } from '../../middleware/auth.middleware.js';
+import { optionalAuth, requireAuth } from '../../middleware/auth.middleware.js';
 import { validate } from '../../middleware/validate.middleware.js';
 import { hashPassword, verifyPassword } from '../../utils/password.js';
 import {
@@ -96,7 +98,9 @@ const deleteMe: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Kullanıcı adına göre herkese açık profili getirir
+// Kullanıcı adına göre herkese açık profili getirir.
+// optionalAuth ile çağrılır: oturum açmış bir izleyici varsa, bu izleyicinin
+// profil sahibini takip edip etmediğini (isFollowing) yanıta ekler.
 const getByUsername: RequestHandler = async (req, res, next) => {
   try {
     const username = (req.params.username ?? '').toLowerCase();
@@ -114,7 +118,134 @@ const getByUsername: RequestHandler = async (req, res, next) => {
       },
     });
     if (!user) throw new NotFoundError('Kullanıcı bulunamadı');
-    res.json(user);
+
+    // İzleyici giriş yapmışsa ve başkasının profiline bakıyorsa takip durumunu hesapla
+    let isFollowing = false;
+    const viewerId = req.auth?.sub;
+    if (viewerId && viewerId !== user.id) {
+      const follow = await prisma.follow.findUnique({
+        where: { followerId_followingId: { followerId: viewerId, followingId: user.id } },
+        select: { id: true },
+      });
+      isFollowing = Boolean(follow);
+    }
+
+    res.json({ ...user, isFollowing });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Bir kullanıcının takipçilerini veya takip ettiklerini listeler.
+// direction: 'followers' → bu kullanıcıyı takip edenler
+//            'following'  → bu kullanıcının takip ettikleri
+// optionalAuth: izleyici giriş yapmışsa, dönen her satıra izleyicinin o kişiyi
+// takip edip etmediği (isFollowing) ve satırın izleyicinin kendisi mi olduğu
+// (isSelf) eklenir; böylece liste içinde takip et/bırak butonu gösterilebilir.
+function listFollows(direction: 'followers' | 'following'): RequestHandler {
+  return async (req, res, next) => {
+    try {
+      const username = (req.params.username ?? '').toLowerCase();
+      const owner = await prisma.user.findUnique({
+        where: { username },
+        select: { id: true },
+      });
+      if (!owner) throw new NotFoundError('Kullanıcı bulunamadı');
+
+      const userSelect = {
+        select: { id: true, username: true, displayName: true, avatarUrl: true },
+      } as const;
+
+      // followers: followingId = owner → follower'ları getir
+      // following: followerId  = owner → following'leri getir
+      const users =
+        direction === 'followers'
+          ? (
+              await prisma.follow.findMany({
+                where: { followingId: owner.id },
+                orderBy: { createdAt: 'desc' },
+                select: { follower: userSelect },
+              })
+            ).map((r) => r.follower)
+          : (
+              await prisma.follow.findMany({
+                where: { followerId: owner.id },
+                orderBy: { createdAt: 'desc' },
+                select: { following: userSelect },
+              })
+            ).map((r) => r.following);
+
+      // İzleyicinin bu listedeki kişileri takip durumunu tek sorguda topla
+      const viewerId = req.auth?.sub;
+      let followedSet = new Set<string>();
+      if (viewerId && users.length > 0) {
+        const followed = await prisma.follow.findMany({
+          where: { followerId: viewerId, followingId: { in: users.map((u) => u.id) } },
+          select: { followingId: true },
+        });
+        followedSet = new Set(followed.map((f) => f.followingId));
+      }
+
+      res.json(
+        users.map((u) => ({
+          ...u,
+          isFollowing: followedSet.has(u.id),
+          isSelf: u.id === viewerId,
+        })),
+      );
+    } catch (err) {
+      next(err);
+    }
+  };
+}
+
+// Bir kullanıcıyı takip eder. İdempotenttir: zaten takip ediliyorsa hata vermez.
+const followUser: RequestHandler = async (req, res, next) => {
+  try {
+    if (!req.auth) throw new UnauthorizedError();
+    const username = (req.params.username ?? '').toLowerCase();
+    const target = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+    if (!target) throw new NotFoundError('Kullanıcı bulunamadı');
+    if (target.id === req.auth.sub) throw new BadRequestError('Kendinizi takip edemezsiniz');
+
+    try {
+      await prisma.follow.create({
+        data: { followerId: req.auth.sub, followingId: target.id },
+      });
+    } catch (err) {
+      // Zaten takip ediliyorsa (unique ihlali) sessizce geç — istek idempotenttir
+      if (!(err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002')) {
+        throw err;
+      }
+    }
+
+    const followerCount = await prisma.follow.count({ where: { followingId: target.id } });
+    res.json({ following: true, followerCount });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Bir kullanıcının takibini bırakır. İdempotenttir: takip edilmiyorsa hata vermez.
+const unfollowUser: RequestHandler = async (req, res, next) => {
+  try {
+    if (!req.auth) throw new UnauthorizedError();
+    const username = (req.params.username ?? '').toLowerCase();
+    const target = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+    if (!target) throw new NotFoundError('Kullanıcı bulunamadı');
+
+    await prisma.follow.deleteMany({
+      where: { followerId: req.auth.sub, followingId: target.id },
+    });
+
+    const followerCount = await prisma.follow.count({ where: { followingId: target.id } });
+    res.json({ following: false, followerCount });
   } catch (err) {
     next(err);
   }
@@ -130,5 +261,13 @@ usersRouter.post(
   changePassword,
 );
 usersRouter.delete('/me', requireAuth, deleteMe);
-usersRouter.get('/:username', getByUsername);
+usersRouter.get('/:username', optionalAuth, getByUsername);
+
+// Takip et / takibi bırak
+usersRouter.post('/:username/follow', requireAuth, followUser);
+usersRouter.delete('/:username/follow', requireAuth, unfollowUser);
+
+// Takipçi / takip edilen listeleri
+usersRouter.get('/:username/followers', optionalAuth, listFollows('followers'));
+usersRouter.get('/:username/following', optionalAuth, listFollows('following'));
 

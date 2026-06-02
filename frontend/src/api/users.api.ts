@@ -19,6 +19,22 @@ export interface ChangePasswordInput {
   confirmPassword: string;
 }
 
+// Takip et/bırak işlemlerinin döndürdüğü güncel durum
+export interface FollowState {
+  following: boolean;
+  followerCount: number;
+}
+
+// Takipçi/takip listesindeki bir kullanıcı satırı
+export interface FollowUser {
+  id: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  isFollowing: boolean; // izleyici bu kişiyi takip ediyor mu
+  isSelf: boolean; // bu satır izleyicinin kendisi mi
+}
+
 // Kullanıcı profili ile ilgili tüm API çağrılarını içeren nesne
 export const usersApi = {
   // Giriş yapan kullanıcının kendi profil bilgilerini getirir
@@ -42,5 +58,29 @@ export const usersApi = {
   // Kullanıcı hesabını kalıcı olarak siler
   deleteMe: async (): Promise<void> => {
     await apiClient.delete('/users/me');
+  },
+
+  // Belirtilen kullanıcıyı takip eder
+  follow: async (username: string): Promise<FollowState> => {
+    const { data } = await apiClient.post<FollowState>(`/users/${username}/follow`);
+    return data;
+  },
+
+  // Belirtilen kullanıcının takibini bırakır
+  unfollow: async (username: string): Promise<FollowState> => {
+    const { data } = await apiClient.delete<FollowState>(`/users/${username}/follow`);
+    return data;
+  },
+
+  // Bir kullanıcının takipçilerini getirir
+  followers: async (username: string): Promise<FollowUser[]> => {
+    const { data } = await apiClient.get<FollowUser[]>(`/users/${username}/followers`);
+    return data;
+  },
+
+  // Bir kullanıcının takip ettiklerini getirir
+  following: async (username: string): Promise<FollowUser[]> => {
+    const { data } = await apiClient.get<FollowUser[]>(`/users/${username}/following`);
+    return data;
   },
 };

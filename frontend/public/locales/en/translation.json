@@ -106,14 +106,19 @@
   },
   "profile": {
     "follow": "Follow",
-    "followComingSoon": "Follow comes online in Phase 5",
+    "unfollow": "Unfollow",
     "editProfile": "Edit profile",
     "watched": "Watched",
     "reviews": "Reviews",
     "followers": "Followers",
     "following": "Following",
     "empty": "No reviews yet from this user.",
-    "notFound": "User not found."
+    "notFound": "User not found.",
+    "close": "Close",
+    "listLoading": "Loading…",
+    "listError": "Could not load the list.",
+    "noFollowers": "No followers yet.",
+    "noFollowing": "Not following anyone yet."
   },
   "settings": {
     "title": "Settings",

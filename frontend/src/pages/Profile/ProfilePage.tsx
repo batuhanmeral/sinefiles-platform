@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { apiClient } from '@/api/client';
+import { usersApi } from '@/api/users.api';
 import { useAuthStore } from '@/features/auth/authStore';
+import { FollowListModal, type FollowListKind } from './FollowListModal';
 
 // Herkese açık kullanıcı profil verisi arayüzü
 interface PublicProfile {
@@ -14,6 +17,7 @@ interface PublicProfile {
   location: string | null;
   createdAt: string;
   watchedCount?: number;
+  isFollowing?: boolean;
   _count: { reviews: number; followers: number; following: number };
 }
 
@@ -24,16 +28,37 @@ export default function ProfilePage() {
   const { username = '' } = useParams();
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
+  const queryClient = useQueryClient();
   const bioMaxLength = 160;
+  const profileKey = ['profile', username];
+  // Açık olan takipçi/takip listesi modal'ı (null ise kapalı)
+  const [followListKind, setFollowListKind] = useState<FollowListKind | null>(null);
 
   // Kullanıcı profilini API'den getir
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['profile', username],
+    queryKey: profileKey,
     queryFn: async () => {
       const { data } = await apiClient.get<PublicProfile>(`/users/${username}`);
       return data;
     },
     enabled: Boolean(username),
+  });
+
+  // Takip et / takibi bırak. Dönen güncel durumla cache'i yerinde günceller.
+  const followMutation = useMutation({
+    mutationFn: (isFollowing: boolean) =>
+      isFollowing ? usersApi.unfollow(username) : usersApi.follow(username),
+    onSuccess: (result) => {
+      queryClient.setQueryData<PublicProfile>(profileKey, (prev) =>
+        prev
+          ? {
+              ...prev,
+              isFollowing: result.following,
+              _count: { ...prev._count, followers: result.followerCount },
+            }
+          : prev,
+      );
+    },
   });
 
   // Yükleme durumu iskeleti
@@ -80,11 +105,21 @@ export default function ProfilePage() {
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="font-display text-2xl font-bold text-ink">{data.displayName ?? data.username}</h1>
-                {/* Kendi profilinse düzenle, değilse takip et butonu */}
+                {/* Kendi profilinse düzenle, giriş yapılmamışsa giriş linki,
+                    değilse takip et / takibi bırak butonu */}
                 {isOwnProfile ? (
                   <Link to="/settings" className="btn-outline px-3 py-1 text-xs">{t('profile.editProfile')}</Link>
+                ) : !user ? (
+                  <Link to="/login" className="btn-outline px-3 py-1 text-xs">{t('profile.follow')}</Link>
                 ) : (
-                  <button type="button" disabled title={t('profile.followComingSoon')} className="btn-outline px-3 py-1 text-xs">{t('profile.follow')}</button>
+                  <button
+                    type="button"
+                    onClick={() => followMutation.mutate(Boolean(data.isFollowing))}
+                    disabled={followMutation.isPending}
+                    className={`${data.isFollowing ? 'btn-outline' : 'btn'} px-3 py-1 text-xs disabled:opacity-60`}
+                  >
+                    {data.isFollowing ? t('profile.unfollow') : t('profile.follow')}
+                  </button>
                 )}
               </div>
               <p className="text-sm text-ink-muted">@{data.username}</p>
@@ -110,8 +145,16 @@ export default function ProfilePage() {
             <div className="grid grid-cols-2 gap-3 text-center">
               <Stat label={t('profile.watched')} value={watchedCount} />
               <Stat label={t('profile.reviews')} value={data._count.reviews} />
-              <Stat label={t('profile.followers')} value={data._count.followers} />
-              <Stat label={t('profile.following')} value={data._count.following} />
+              <Stat
+                label={t('profile.followers')}
+                value={data._count.followers}
+                onClick={() => setFollowListKind('followers')}
+              />
+              <Stat
+                label={t('profile.following')}
+                value={data._count.following}
+                onClick={() => setFollowListKind('following')}
+              />
             </div>
           </div>
         </div>
@@ -119,16 +162,40 @@ export default function ProfilePage() {
 
       {/* İçerik alanı yer tutucusu */}
       <div className="card text-sm text-ink-muted">{t('profile.empty')}</div>
+
+      {/* Takipçi / takip edilen listesi modal'ı */}
+      {followListKind && (
+        <FollowListModal
+          username={data.username}
+          kind={followListKind}
+          onClose={() => setFollowListKind(null)}
+        />
+      )}
     </div>
   );
 }
 
-// İstatistik göstergesi bileşeni (izlenen, inceleme, takipçi, takip sayıları)
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <div>
+// İstatistik göstergesi bileşeni (izlenen, inceleme, takipçi, takip sayıları).
+// onClick verilirse tıklanabilir bir butona dönüşür (takipçi/takip listesini açar).
+function Stat({ label, value, onClick }: { label: string; value: number; onClick?: () => void }) {
+  const content = (
+    <>
       <div className="font-display text-xl font-bold text-ink">{value}</div>
       <div className="text-xs uppercase tracking-wider text-ink-muted">{label}</div>
-    </div>
+    </>
+  );
+
+  if (!onClick) {
+    return <div>{content}</div>;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-lg transition hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+    >
+      {content}
+    </button>
   );
 }
