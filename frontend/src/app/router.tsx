@@ -11,6 +11,7 @@ const ContentDetailPage = lazy(() => import('@/pages/ContentDetail/ContentDetail
 const LoginPage = lazy(() => import('@/pages/Auth/LoginPage'));
 const RegisterPage = lazy(() => import('@/pages/Auth/RegisterPage'));
 const ProfilePage = lazy(() => import('@/pages/Profile/ProfilePage'));
+const UserReviewsPage = lazy(() => import('@/pages/Profile/UserReviewsPage'));
 const PersonPage = lazy(() => import('@/pages/Person/PersonPage'));
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound/NotFoundPage'));
@@ -41,6 +42,8 @@ export function AppRouter() {
           <Route path="/register" element={<RegisterPage />} />
           {/* Kullanıcı profil sayfası - username parametresi ile */}
           <Route path="/u/:username" element={<ProfilePage />} />
+          {/* Kullanıcının tüm incelemeleri */}
+          <Route path="/u/:username/reviews" element={<UserReviewsPage />} />
           {/* Oyuncu sayfası - TMDB kişi ID'si ile */}
           <Route path="/person/:personId" element={<PersonPage />} />
           {/* Ayarlar sayfası - sadece giriş yapmış kullanıcılar erişebilir */}

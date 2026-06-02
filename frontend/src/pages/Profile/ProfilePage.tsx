@@ -6,6 +6,8 @@ import { apiClient } from '@/api/client';
 import { usersApi } from '@/api/users.api';
 import { useAuthStore } from '@/features/auth/authStore';
 import { FollowListModal, type FollowListKind } from './FollowListModal';
+import { FavoritesSection } from './FavoritesSection';
+import { UserReviewsSection } from './UserReviewsSection';
 
 // Herkese açık kullanıcı profil verisi arayüzü
 interface PublicProfile {
@@ -144,7 +146,11 @@ export default function ProfilePage() {
           <div className="lg:w-[30%] lg:self-stretch lg:border-l lg:border-white/10 lg:pl-6">
             <div className="grid grid-cols-2 gap-3 text-center">
               <Stat label={t('profile.watched')} value={watchedCount} />
-              <Stat label={t('profile.reviews')} value={data._count.reviews} />
+              <Stat
+                label={t('profile.reviews')}
+                value={data._count.reviews}
+                to={`/u/${data.username}/reviews`}
+              />
               <Stat
                 label={t('profile.followers')}
                 value={data._count.followers}
@@ -160,8 +166,11 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      {/* İçerik alanı yer tutucusu */}
-      <div className="card text-sm text-ink-muted">{t('profile.empty')}</div>
+      {/* Favoriler: öne çıkan içerikler, oyuncu ve yönetmen */}
+      <FavoritesSection username={data.username} />
+
+      {/* Kullanıcının yazdığı incelemeler */}
+      <UserReviewsSection username={data.username} />
 
       {/* Takipçi / takip edilen listesi modal'ı */}
       {followListKind && (
@@ -176,8 +185,18 @@ export default function ProfilePage() {
 }
 
 // İstatistik göstergesi bileşeni (izlenen, inceleme, takipçi, takip sayıları).
-// onClick verilirse tıklanabilir bir butona dönüşür (takipçi/takip listesini açar).
-function Stat({ label, value, onClick }: { label: string; value: number; onClick?: () => void }) {
+// `to` verilirse bağlantıya, `onClick` verilirse butona dönüşür; ikisi de yoksa düz metin.
+function Stat({
+  label,
+  value,
+  to,
+  onClick,
+}: {
+  label: string;
+  value: number;
+  to?: string;
+  onClick?: () => void;
+}) {
   const content = (
     <>
       <div className="font-display text-xl font-bold text-ink">{value}</div>
@@ -185,8 +204,19 @@ function Stat({ label, value, onClick }: { label: string; value: number; onClick
     </>
   );
 
-  if (!onClick) {
+  if (!to && !onClick) {
     return <div>{content}</div>;
+  }
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className="rounded-lg transition hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        {content}
+      </Link>
+    );
   }
 
   return (

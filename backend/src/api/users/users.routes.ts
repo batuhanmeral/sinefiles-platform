@@ -12,6 +12,8 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from '../../utils/errors.js';
+import * as tmdb from '../../services/tmdb.service.js';
+import { listReviewsByUser } from '../reviews/reviews.service.js';
 import { changePasswordSchema, updateMeSchema } from './users.validator.js';
 
 export const usersRouter = Router();
@@ -27,6 +29,9 @@ const meSelect = {
   location: true,
   language: true,
   role: true,
+  favoriteContent: true,
+  favoriteActorId: true,
+  favoriteDirectorId: true,
   createdAt: true,
 } as const;
 
@@ -251,6 +256,104 @@ const unfollowUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+// Favori içerik referansının şekli (DB'de Json olarak saklanır)
+interface FavoriteContentRef {
+  tmdbId: number;
+  type: tmdb.TmdbType;
+}
+
+// Saklanan favoriteContent JSON'unu güvenli şekilde ayrıştırır
+function parseFavoriteContent(value: unknown): FavoriteContentRef[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter(
+      (v): v is FavoriteContentRef =>
+        !!v &&
+        typeof v === 'object' &&
+        typeof (v as FavoriteContentRef).tmdbId === 'number' &&
+        ((v as FavoriteContentRef).type === 'movie' || (v as FavoriteContentRef).type === 'tv'),
+    )
+    .slice(0, 4);
+}
+
+// Bir kişinin (oyuncu/yönetmen) favori kart verisini TMDB'den getirir; bulunamazsa null
+async function enrichPerson(id: number | null, language: tmdb.Lang) {
+  if (!id) return null;
+  try {
+    const p = await tmdb.person(id, language);
+    return { id: p.id, name: p.name, profilePath: p.profilePath };
+  } catch {
+    return null;
+  }
+}
+
+// Kullanıcının favorilerini TMDB metaverisiyle zenginleştirip döner.
+// Profil sayfasını hafif tutmak için ana profil sorgusundan ayrı bir endpoint'tir.
+const getFavorites: RequestHandler = async (req, res, next) => {
+  try {
+    const username = (req.params.username ?? '').toLowerCase();
+    const language = ((req.query.language as string) ?? 'tr-TR') as tmdb.Lang;
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: { favoriteContent: true, favoriteActorId: true, favoriteDirectorId: true },
+    });
+    if (!user) throw new NotFoundError('Kullanıcı bulunamadı');
+
+    const refs = parseFavoriteContent(user.favoriteContent);
+
+    // Tüm TMDB çağrılarını paralel yap (hepsi cache'li); silinmiş öğeleri ele
+    const [contentResults, actor, director] = await Promise.all([
+      Promise.all(
+        refs.map(async (ref) => {
+          try {
+            const d = await tmdb.detail(ref.type, ref.tmdbId, language);
+            return {
+              tmdbId: d.id,
+              type: d.type,
+              title: d.title,
+              posterPath: d.posterPath,
+              releaseDate: d.releaseDate,
+              voteAverage: d.voteAverage,
+            };
+          } catch {
+            return null;
+          }
+        }),
+      ),
+      enrichPerson(user.favoriteActorId, language),
+      enrichPerson(user.favoriteDirectorId, language),
+    ]);
+
+    res.json({
+      content: contentResults.filter((c) => c !== null),
+      actor,
+      director,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Bir kullanıcının yazdığı incelemeleri (içerik bilgisiyle) listeler
+const getReviews: RequestHandler = async (req, res, next) => {
+  try {
+    const username = (req.params.username ?? '').toLowerCase();
+    const limit = Math.min(Number(req.query.limit ?? 20), 50);
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+    if (!user) throw new NotFoundError('Kullanıcı bulunamadı');
+
+    const reviews = await listReviewsByUser(user.id, limit, req.auth?.sub);
+    res.json(reviews);
+  } catch (err) {
+    next(err);
+  }
+};
+
 usersRouter.get('/me', requireAuth, getMe);
 usersRouter.patch('/me', requireAuth, validate(updateMeSchema), updateMe);
 
@@ -261,7 +364,9 @@ usersRouter.post(
   changePassword,
 );
 usersRouter.delete('/me', requireAuth, deleteMe);
-usersRouter.get('/:username', optionalAuth, getByUsername);
+// Not: /:username/* alt rotaları /:username'den önce tanımlanmalı
+usersRouter.get('/:username/favorites', getFavorites);
+usersRouter.get('/:username/reviews', optionalAuth, getReviews);
 
 // Takip et / takibi bırak
 usersRouter.post('/:username/follow', requireAuth, followUser);
@@ -270,4 +375,6 @@ usersRouter.delete('/:username/follow', requireAuth, unfollowUser);
 // Takipçi / takip edilen listeleri
 usersRouter.get('/:username/followers', optionalAuth, listFollows('followers'));
 usersRouter.get('/:username/following', optionalAuth, listFollows('following'));
+
+usersRouter.get('/:username', optionalAuth, getByUsername);
 

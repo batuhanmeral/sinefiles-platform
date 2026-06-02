@@ -178,6 +178,36 @@ export async function listPopularReviews(
   }));
 }
 
+// Belirli bir kullanıcının yazdığı incelemeleri içerik bilgisiyle birlikte listeler.
+// Profil sayfasındaki "İncelemeler" bölümünde kullanılır.
+export async function listReviewsByUser(userId: string, limit: number, viewerId?: string) {
+  const rows = await prisma.review.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    include: {
+      ...reviewInclude,
+      content: {
+        select: {
+          id: true,
+          tmdbId: true,
+          type: true,
+          title: true,
+          posterPath: true,
+          releaseDate: true,
+        },
+      },
+    },
+  });
+
+  const likedSet = await annotateLiked(rows, viewerId);
+
+  return rows.map((r) => ({
+    ...shape(r, likedSet.has(r.id)),
+    content: r.content,
+  }));
+}
+
 export async function getMyReviewForContent(userId: string, contentId: string) {
   const r = await prisma.review.findUnique({
     where: { userId_contentId: { userId, contentId } },
