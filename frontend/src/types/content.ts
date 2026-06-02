@@ -105,6 +105,7 @@ export interface UserFavorites {
 export interface ContentDetail extends ContentItem {
   runtime: number | null;           // Süre (dakika cinsinden)
   tagline: string | null;           // Slogan/tagline
+  director: string | null;          // Yönetmen(ler)in tam adı
   genres: Genre[];                  // Tür listesi
   cast: CastMember[];               // Oyuncu kadrosu
   videos: VideoMeta[];               // Fragmanlar ve videolar

@@ -124,6 +124,13 @@ export default function ContentDetailPage({ type }: ContentDetailPageProps) {
               ))}
             </div>
 
+            {/* Yönetmen */}
+            {data.director && (
+              <p className="mt-3 text-sm text-ink-muted">
+                {t('content.director')}: <span className="font-medium text-ink">{data.director}</span>
+              </p>
+            )}
+
             {/* Özet */}
             {data.overview && (
               <div className="mt-6">

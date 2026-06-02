@@ -31,6 +31,8 @@ export interface TmdbPage<T> {
 export interface TmdbDetail extends TmdbItem {
   runtime: number | null;
   tagline: string | null;
+  // Yönetmen(ler)in tam adı; birden fazlaysa virgülle birleştirilir, yoksa null
+  director: string | null;
   genres: { id: number; name: string }[];
   cast: { id: number; name: string; character: string; profilePath: string | null }[];
   videos: { key: string; site: string; type: string; name: string }[];
@@ -72,6 +74,7 @@ interface RawDetailResponse extends RawItem {
   genres?: { id: number; name: string }[];
   credits?: {
     cast?: { id: number; name: string; character: string; profile_path: string | null }[];
+    crew?: { id: number; name: string; job: string }[];
   };
   videos?: {
     results?: { key: string; site: string; type: string; name: string }[];
@@ -79,6 +82,8 @@ interface RawDetailResponse extends RawItem {
   recommendations?: {
     results?: RawItem[];
   };
+  // Diziler için yaratıcı(lar); film yönetmeni crew içindedir
+  created_by?: { id: number; name: string }[];
   last_air_date?: string | null;
   status?: string;
   in_production?: boolean;
@@ -286,10 +291,17 @@ export async function detail(type: TmdbType, id: number, language: Lang): Promis
     });
     const base = normalize(raw, type);
     const runtime = type === 'movie' ? (raw.runtime ?? null) : (raw.episode_run_time?.[0] ?? null);
+    // Yönetmen: filmlerde crew'da job='Director', dizilerde created_by (yaratıcılar)
+    const directorNames =
+      type === 'movie'
+        ? (raw.credits?.crew ?? []).filter((c) => c.job === 'Director').map((c) => c.name)
+        : (raw.created_by ?? []).map((c) => c.name);
+    const director = [...new Set(directorNames)].join(', ') || null;
     return {
       ...base,
       runtime,
       tagline: raw.tagline ?? null,
+      director,
       genres: raw.genres ?? [],
       lastAirDate: raw.last_air_date ?? null,
       status: raw.status,
