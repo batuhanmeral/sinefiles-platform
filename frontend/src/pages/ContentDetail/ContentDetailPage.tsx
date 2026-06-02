@@ -7,7 +7,7 @@ import { backdrop, poster, profile, youtubeEmbed, youtubeThumb } from '@/lib/tmd
 import { RatingStars } from '@/components/content/RatingStars';
 import { ContentCard } from '@/components/content/ContentCard';
 import { Slider } from '@/components/layout/Slider';
-import { ReviewsSection } from '@/features/reviews/ReviewsSection';
+import { ReviewsSection } from '@/features/review/ReviewsSection';
 import type { TmdbType } from '@/types/content';
 
 interface ContentDetailPageProps {

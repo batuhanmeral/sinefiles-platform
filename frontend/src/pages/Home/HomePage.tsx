@@ -10,8 +10,8 @@ import { reviewsApi } from '@/api/reviews.api';
 import { listsApi } from '@/api/lists.api';
 import { backdrop, poster } from '@/lib/tmdb';
 import { RatingStars } from '@/components/content/RatingStars';
-import { PopularReviewCard } from '@/features/reviews/PopularReviewCard';
-import { PopularListCard } from '@/features/lists/PopularListCard';
+import { PopularReviewCard } from '@/features/review/PopularReviewCard';
+import { PopularListCard } from '@/features/list/PopularListCard';
 import type { ContentItem } from '@/types/content';
 
 // Ana sayfa bileşeni

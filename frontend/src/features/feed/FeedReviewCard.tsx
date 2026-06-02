@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { reviewsApi, type PopularReview } from '@/api/reviews.api';
 import { useAuthStore } from '@/features/auth/authStore';
 import { RatingStars } from '@/components/content/RatingStars';
-import { CommentThread } from '@/features/reviews/CommentThread';
+import { CommentThread } from '@/features/review/CommentThread';
 import { Dropdown, DropdownItem, dropdownItemClass } from '@/components/common/Dropdown';
 import { poster } from '@/lib/tmdb';
 import { timeAgo } from '@/lib/timeAgo';
