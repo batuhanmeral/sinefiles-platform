@@ -12,7 +12,7 @@ import { reviewsRouter, contentReviewsRouter } from './api/reviews/reviews.route
 import { listsRouter } from './api/lists/lists.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import { generalRateLimiter } from './middleware/rateLimit.middleware.js';
-
+import adminRoutes from './routes/admin.routes';
 // Express uygulamasını oluşturur ve yapılandırır
 // Middleware'leri ve route'ları tanımlar
 export function createApp() {
@@ -58,6 +58,7 @@ export function createApp() {
   app.use('/api/users', usersRouter);
   app.use('/api/reviews', reviewsRouter);
   app.use('/api/lists', listsRouter);
+  app.use('/api/admin', adminRoutes);
 
   // Bulunamayan rotalar ve hatalar için middleware'ler (en sonda olmalı)
   app.use(notFoundHandler);
