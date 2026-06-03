@@ -8,7 +8,7 @@ import { RatingStars } from '@/components/content/RatingStars';
 import { ContentCard } from '@/components/content/ContentCard';
 import { Slider } from '@/components/layout/Slider';
 import { ReviewsSection } from '@/features/review/ReviewsSection';
-import { AddToListButton } from '@/components/lists/AddToListButton';
+import { ContentListActions } from '@/components/lists/ContentListActions';
 import type { TmdbType } from '@/types/content';
 
 interface ContentDetailPageProps {
@@ -125,11 +125,6 @@ export default function ContentDetailPage({ type }: ContentDetailPageProps) {
               ))}
             </div>
 
-            {/* Listeye ekle (giriş yapan kullanıcılar) */}
-            <div className="mt-4">
-              <AddToListButton tmdbId={id} type={data.type} />
-            </div>
-
             {/* Yönetmen */}
             {data.director && (
               <p className="mt-3 text-sm text-ink-muted">
@@ -145,9 +140,9 @@ export default function ContentDetailPage({ type }: ContentDetailPageProps) {
               </div>
             )}
 
-            {/* Aksiyon butonları */}
+            {/* Aksiyon butonları: liste aksiyonları (tek-tık İzledim/İzleyeceğim + Listeye Ekle) + fragman */}
             <div className="mt-6 flex flex-wrap gap-3">
-              <button type="button" className="btn-outline">{t('content.addWatchlist')}</button>
+              <ContentListActions tmdbId={id} type={data.type} />
               {trailer && (
                 <button type="button" className="btn-ghost" onClick={() => setTrailerOpen(true)}>▶ {t('content.trailer')}</button>
               )}

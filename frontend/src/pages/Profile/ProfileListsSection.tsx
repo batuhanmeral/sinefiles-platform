@@ -26,8 +26,15 @@ export function ProfileListsSection({ username }: { username: string }) {
     enabled: Boolean(username),
   });
 
-  // Boş öğeli sistem listelerini gizle (gösterilecek bir şey yoksa kalabalık yapmasın)
-  const visible = (lists ?? []).filter((l) => l.itemCount > 0 || l.type === 'CUSTOM');
+  // İzlenenler ve İzleme Listesi her zaman gösterilir (zorunlu/erişilebilir listeler);
+  // Favoriler ve diğerleri yalnızca içerik varsa, CUSTOM listeler her zaman.
+  const visible = (lists ?? []).filter(
+    (l) =>
+      l.type === 'WATCHED' ||
+      l.type === 'WATCHLIST' ||
+      l.type === 'CUSTOM' ||
+      l.itemCount > 0,
+  );
   if (visible.length === 0) return null;
 
   return (
