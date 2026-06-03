@@ -243,15 +243,6 @@ export function FeedReviewCard({ review }: Props) {
               >
                 <LinkIcon className="h-4 w-4" /> {t('feed.copyLink')}
               </DropdownItem>
-              <DropdownItem
-                disabled={!me}
-                onClick={() => {
-                  flash('reposted');
-                  close();
-                }}
-              >
-                <RepostIcon className="h-4 w-4" /> {t('feed.repost')}
-              </DropdownItem>
             </>
           )}
         </Dropdown>
@@ -388,26 +379,6 @@ function LinkIcon({ className }: { className?: string }) {
     >
       <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.7 1.7" />
       <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.7-1.7" />
-    </svg>
-  );
-}
-
-function RepostIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M17 2l4 4-4 4" />
-      <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-      <path d="M7 22l-4-4 4-4" />
-      <path d="M21 13v2a4 4 0 0 1-4 4H3" />
     </svg>
   );
 }
