@@ -332,5 +332,12 @@
     "public": "Public",
     "private": "Private",
     "items": "{{count}} items"
+  },
+  "lists": {
+    "title": "Lists",
+    "subtitle": "The best movie and TV show lists created by users.",
+    "myLists": "My Lists",
+    "empty": "No popular lists yet.",
+    "loadMore": "Load More"
   }
 }

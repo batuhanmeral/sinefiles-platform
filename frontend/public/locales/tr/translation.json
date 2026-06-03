@@ -332,5 +332,12 @@
     "public": "Herkese Açık",
     "private": "Özel",
     "items": "{{count}} içerik"
+  },
+  "lists": {
+    "title": "Listeler",
+    "subtitle": "Kullanıcıların oluşturduğu en iyi film ve dizi listeleri.",
+    "myLists": "Listelerim",
+    "empty": "Henüz popüler liste yok.",
+    "loadMore": "Daha Fazla Yükle"
   }
 }
