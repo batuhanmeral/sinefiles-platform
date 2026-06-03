@@ -21,8 +21,6 @@ function sortReviews(list: PopularReview[], sort: FeedSortKey): PopularReview[] 
   switch (sort) {
     case 'newest':
       return arr.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
-    case 'mostLiked':
-      return arr.sort((a, b) => b.likeCount - a.likeCount);
     case 'mostCommented':
       return arr.sort((a, b) => b.commentCount - a.commentCount);
     default:
@@ -36,7 +34,7 @@ export default function FeedPage() {
   const { t } = useTranslation();
   const isAuthed = useAuthStore((s) => Boolean(s.user));
   const [source, setSource] = useState<FeedSource>('popular');
-  const [sort, setSort] = useState<FeedSortKey>('relevant');
+  const [sort, setSort] = useState<FeedSortKey>('newest');
   const [windowKey, setWindowKey] = useState<FeedWindowKey>('week');
 
   // Giriş yapılmamışsa takip akışı seçilemez; oturum kapanırsa popüler'e geri dön

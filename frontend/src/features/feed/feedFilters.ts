@@ -3,7 +3,7 @@
 // (bir dosya hem bileşen hem sabit/değer export ederse Fast Refresh bozulur).
 
 export type FeedSource = 'popular' | 'following';
-export type FeedSortKey = 'relevant' | 'newest' | 'mostLiked' | 'mostCommented';
+export type FeedSortKey = 'relevant' | 'newest' | 'mostCommented';
 export type FeedWindowKey = 'week' | 'month' | 'all';
 
 // Zaman penceresi seçenekleri ve karşılık gelen gün sayıları
@@ -14,7 +14,7 @@ export const FEED_WINDOWS: { key: FeedWindowKey; days: number }[] = [
 ];
 
 // Sıralama seçenekleri
-export const FEED_SORTS: FeedSortKey[] = ['relevant', 'newest', 'mostLiked', 'mostCommented'];
+export const FEED_SORTS: FeedSortKey[] = ['newest', 'relevant', 'mostCommented'];
 
 export interface FeedFilterState {
   source: FeedSource;
