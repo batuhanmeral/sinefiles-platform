@@ -10,6 +10,7 @@ import { contentRouter } from './api/content/content.routes.js';
 import { usersRouter } from './api/users/users.routes.js';
 import { reviewsRouter, contentReviewsRouter } from './api/reviews/reviews.routes.js';
 import { listsRouter } from './api/lists/lists.routes.js';
+import { adminRouter } from './api/admin/admin.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import { generalRateLimiter } from './middleware/rateLimit.middleware.js';
 
@@ -58,6 +59,7 @@ export function createApp() {
   app.use('/api/users', usersRouter);
   app.use('/api/reviews', reviewsRouter);
   app.use('/api/lists', listsRouter);
+  app.use('/api/admin', adminRouter);
 
   // Bulunamayan rotalar ve hatalar için middleware'ler (en sonda olmalı)
   app.use(notFoundHandler);
