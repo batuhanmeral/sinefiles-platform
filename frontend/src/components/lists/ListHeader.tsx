@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { ListDetailResponse } from '@/api/lists.api';
+import { listDisplayName } from '@/features/list/listLabels';
 
 interface Props {
   list: ListDetailResponse;
@@ -8,9 +11,18 @@ interface Props {
   canShare: boolean;
 }
 
-// Liste detay sayfasının üst başlığı: başlık, tür/görünürlük rozetleri,
-// beğeni ve paylaş butonları, opsiyonel kapak görseli
+// Liste tipine göre rozet emojisi
+const typeEmoji: Record<ListDetailResponse['type'], string> = {
+  WATCHED: '✅',
+  WATCHLIST: '📋',
+  FAVORITES: '❤️',
+  CUSTOM: '📌',
+};
+
+// Liste detay sayfasının üst başlığı: başlık, oluşturan kişi (profile link),
+// tür/görünürlük rozetleri, beğeni ve paylaş butonları, opsiyonel kapak görseli
 export function ListHeader({ list, onToggleLike, isLiking, canShare }: Props) {
+  const { t } = useTranslation();
   const [showShareMenu, setShowShareMenu] = useState(false);
 
   const shareUrl = `${window.location.origin}/lists/${list.id}`;
@@ -30,16 +42,27 @@ export function ListHeader({ list, onToggleLike, isLiking, canShare }: Props) {
         <div className="mb-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-ink">{list.title}</h1>
+              <h1 className="text-3xl font-bold text-ink">{listDisplayName(list, t)}</h1>
+
+              {/* Oluşturan kişi — adı + kullanıcı adı, tıklayınca profile gider */}
+              <Link
+                to={`/u/${list.user.username}`}
+                className="mt-1 inline-flex items-center gap-1.5 text-sm text-ink-muted transition-colors hover:text-accent"
+              >
+                <span className="font-medium text-ink">
+                  {list.user.displayName ?? list.user.username}
+                </span>
+                <span>@{list.user.username}</span>
+              </Link>
+
               <p className="mt-2 text-sm text-ink-muted">
-                {list.type === 'WATCHED' && '✅ İzlenenler'}
-                {list.type === 'WATCHLIST' && '📋 İzlenecekler'}
-                {list.type === 'FAVORITES' && '❤️ Favoriler'}
-                {list.type === 'CUSTOM' && '📌 Özel Liste'}
+                {typeEmoji[list.type]} {t(`list.types.${list.type}`)}
                 {' • '}
-                {list.visibility === 'PUBLIC' ? '🌐 Herkese Açık' : '🔒 Özel'}
+                {list.visibility === 'PUBLIC'
+                  ? `🌐 ${t('list.public')}`
+                  : `🔒 ${t('list.private')}`}
                 {' • '}
-                {list.items.length} içerik
+                {t('list.items', { count: list.items.length })}
               </p>
             </div>
 

@@ -1,27 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { listsApi, type MyListSummary } from '@/api/lists.api';
+import { listsApi } from '@/api/lists.api';
 import { useInvalidateLists } from '@/features/list/useInvalidateLists';
+import { listDisplayName } from '@/features/list/listLabels';
 import { CreateListModal, type EditableList } from '@/components/lists/CreateListModal';
-
-// Liste tipi → görünen etiket
-function typeLabel(type: MyListSummary['type'], title: string): string {
-  switch (type) {
-    case 'WATCHED':
-      return 'İzlenenler';
-    case 'WATCHLIST':
-      return 'İzlenecekler';
-    case 'FAVORITES':
-      return 'Favoriler';
-    default:
-      return title;
-  }
-}
 
 // Giriş yapan kullanıcının kendi listelerini yönettiği sayfa (/my-lists).
 // Sistem listeleri + oluşturulan CUSTOM listeler; yeni liste oluşturma ve silme.
 export default function MyListsPage() {
+  const { t } = useTranslation();
   const invalidateLists = useInvalidateLists();
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<EditableList | null>(null);
@@ -65,7 +54,7 @@ export default function MyListsPage() {
               <Link to={`/lists/${list.id}`} className="block">
                 <div className="flex items-center gap-2">
                   <h3 className="truncate font-semibold text-ink group-hover:text-accent">
-                    {typeLabel(list.type, list.title)}
+                    {listDisplayName(list, t)}
                   </h3>
                   <span className="text-xs">{list.visibility === 'PUBLIC' ? '🌐' : '🔒'}</span>
                 </div>

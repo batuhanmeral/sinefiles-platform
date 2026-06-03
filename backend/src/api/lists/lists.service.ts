@@ -45,7 +45,9 @@ const listItemSelect = {
 // Her liste için kart önizlemesi: ilk 4 öğenin poster yolları ve beğeni/öğe sayıları.
 export async function listPopularLists(limit: number) {
   const lists = await prisma.list.findMany({
-    where: { visibility: 'PUBLIC' },
+    // Yalnızca kullanıcı tarafından oluşturulan (CUSTOM) herkese açık listeler;
+    // zorunlu sistem listeleri (İzlenenler/İzleme Listesi/Favoriler) burada gösterilmez.
+    where: { visibility: 'PUBLIC', type: 'CUSTOM' },
     orderBy: [{ likes: { _count: 'desc' } }, { createdAt: 'desc' }],
     take: limit,
     include: {

@@ -321,5 +321,16 @@
   "notFound": {
     "message": "We couldn't find the page you were looking for.",
     "backHome": "Back to home"
+  },
+  "list": {
+    "types": {
+      "WATCHED": "Watched",
+      "WATCHLIST": "Watchlist",
+      "FAVORITES": "Favorites",
+      "CUSTOM": "Custom List"
+    },
+    "public": "Public",
+    "private": "Private",
+    "items": "{{count}} items"
   }
 }

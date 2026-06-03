@@ -321,5 +321,16 @@
   "notFound": {
     "message": "Aradığın sayfayı bulamadık.",
     "backHome": "Ana sayfaya dön"
+  },
+  "list": {
+    "types": {
+      "WATCHED": "İzlenenler",
+      "WATCHLIST": "İzlenecekler",
+      "FAVORITES": "Favoriler",
+      "CUSTOM": "Özel Liste"
+    },
+    "public": "Herkese Açık",
+    "private": "Özel",
+    "items": "{{count}} içerik"
   }
 }

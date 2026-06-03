@@ -18,7 +18,6 @@ import {
 import { listsApi } from '@/api/lists.api';
 import { useInvalidateLists } from '@/features/list/useInvalidateLists';
 import { ListHeader } from '@/components/lists/ListHeader';
-import { ListOwnerCard } from '@/components/lists/ListOwnerCard';
 import { SortableListItem } from '@/components/lists/SortableListItem';
 
 // Tek bir listenin detay sayfası (/lists/:listId).
@@ -99,17 +98,13 @@ export default function ListDetailPage() {
           canShare={canShare}
         />
 
-        <div className="mt-8">
-          <ListOwnerCard user={list.user} />
-        </div>
-
         {list.description && (
-          <div className="mb-8">
+          <div className="mt-8">
             <p className="leading-relaxed text-ink-muted">{list.description}</p>
           </div>
         )}
 
-        <div>
+        <div className="mt-8">
           <h2 className="mb-4 text-lg font-semibold text-ink">
             İçerikler ({list.items.length})
           </h2>

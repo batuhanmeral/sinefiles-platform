@@ -5,6 +5,7 @@ import { listsApi, type MyListSummary } from '@/api/lists.api';
 import { langFromI18n } from '@/api/content.api';
 import { useAuthStore } from '@/features/auth/authStore';
 import { useInvalidateLists } from '@/features/list/useInvalidateLists';
+import { listDisplayName } from '@/features/list/listLabels';
 import { Dropdown, DropdownItem } from '@/components/common/Dropdown';
 import { CreateListModal } from './CreateListModal';
 
@@ -13,26 +14,12 @@ interface Props {
   type: 'movie' | 'tv';
 }
 
-// Liste tipine göre menü etiketi
-function listLabel(list: MyListSummary): string {
-  switch (list.type) {
-    case 'WATCHED':
-      return 'İzlenenler';
-    case 'WATCHLIST':
-      return 'İzlenecekler';
-    case 'FAVORITES':
-      return 'Favoriler';
-    default:
-      return list.title;
-  }
-}
-
 // İçerik detayındaki liste aksiyonları: tek tıkla "İzledim" (WATCHED) ve
 // "İzleyeceğim" (WATCHLIST) toggle butonları + tüm listeler için "Listeye Ekle"
 // açılır menüsü (yeni liste oluşturma dahil). Sadece giriş yapana görünür.
 export function ContentListActions({ tmdbId, type }: Props) {
   const user = useAuthStore((s) => s.user);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const invalidateLists = useInvalidateLists();
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -96,7 +83,7 @@ export function ContentListActions({ tmdbId, type }: Props) {
                 onClick={() => toggle.mutate(list)}
                 disabled={toggle.isPending}
               >
-                <span className="flex-1">{listLabel(list)}</span>
+                <span className="flex-1">{listDisplayName(list, t)}</span>
                 {list.itemId ? (
                   <span className="text-accent">✓</span>
                 ) : (

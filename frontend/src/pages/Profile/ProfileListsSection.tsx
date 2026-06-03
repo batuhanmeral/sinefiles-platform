@@ -1,25 +1,14 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { poster } from '@/lib/tmdb';
-import { listsApi, type UserListSummary } from '@/api/lists.api';
-
-// Liste tipi → etiket
-function typeLabel(list: UserListSummary): string {
-  switch (list.type) {
-    case 'WATCHED':
-      return 'İzlenenler';
-    case 'WATCHLIST':
-      return 'İzlenecekler';
-    case 'FAVORITES':
-      return 'Favoriler';
-    default:
-      return list.title;
-  }
-}
+import { listsApi } from '@/api/lists.api';
+import { listDisplayName } from '@/features/list/listLabels';
 
 // Profil sayfasında kullanıcının listelerini gösteren bölüm.
 // Başkası bakıyorsa yalnızca herkese açık listeler; sahibi ise özeller de gelir (backend).
 export function ProfileListsSection({ username }: { username: string }) {
+  const { t } = useTranslation();
   const { data: lists } = useQuery({
     queryKey: ['user-lists', username],
     queryFn: () => listsApi.userLists(username),
@@ -71,7 +60,7 @@ export function ProfileListsSection({ username }: { username: string }) {
 
             <div className="mt-3 flex items-center gap-2">
               <h3 className="truncate font-semibold text-ink group-hover:text-accent">
-                {typeLabel(list)}
+                {listDisplayName(list, t)}
               </h3>
               <span className="text-xs">{list.visibility === 'PUBLIC' ? '🌐' : '🔒'}</span>
             </div>
