@@ -24,7 +24,7 @@
     "loginSubtitle": "Continue your cinema journal.",
     "registerTitle": "Create your account",
     "registerSubtitle": "Track films, build lists, share with friends.",
-    "identifier": "Email or username",
+    "identifier": "Username",
     "email": "Email",
     "username": "Username",
     "displayName": "Display name",
@@ -36,7 +36,7 @@
     "noAccount": "No account?",
     "hasAccount": "Already have an account?",
     "errors": {
-      "identifierRequired": "Email or username required",
+      "identifierRequired": "Username is required",
       "passwordRequired": "Password required",
       "passwordShort": "Password must be at least 8 characters",
       "passwordLong": "Password is too long",
@@ -300,13 +300,12 @@
       "time": "Time"
     },
     "source": {
-      "popular": "Popular",
+      "popular": "Everyone",
       "following": "Following"
     },
     "sort": {
-      "relevant": "Top",
       "newest": "Newest",
-      "mostLiked": "Most liked",
+      "relevant": "Most Liked",
       "mostCommented": "Most discussed"
     },
     "friends": {

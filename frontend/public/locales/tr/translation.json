@@ -24,7 +24,7 @@
     "loginSubtitle": "Sinema günlüğüne devam et.",
     "registerTitle": "Hesap oluştur",
     "registerSubtitle": "İzlediklerini kaydetmeye, listeler oluşturmaya başla.",
-    "identifier": "E-posta veya kullanıcı adı",
+    "identifier": "Kullanıcı adı",
     "email": "E-posta",
     "username": "Kullanıcı adı",
     "displayName": "Görünen ad",
@@ -36,7 +36,7 @@
     "noAccount": "Hesabın yok mu?",
     "hasAccount": "Zaten hesabın var mı?",
     "errors": {
-      "identifierRequired": "E-posta veya kullanıcı adı gerekli",
+      "identifierRequired": "Kullanıcı adı gerekli",
       "passwordRequired": "Şifre gerekli",
       "passwordShort": "Şifre en az 8 karakter olmalı",
       "passwordLong": "Şifre çok uzun",
@@ -300,13 +300,12 @@
       "time": "Zaman"
     },
     "source": {
-      "popular": "Popüler",
+      "popular": "Herkes",
       "following": "Takip Ettiklerin"
     },
     "sort": {
-      "relevant": "Öne Çıkanlar",
       "newest": "En Yeni",
-      "mostLiked": "En Beğenilen",
+      "relevant": "En Beğenilenler",
       "mostCommented": "En Çok Yorumlanan"
     },
     "friends": {
