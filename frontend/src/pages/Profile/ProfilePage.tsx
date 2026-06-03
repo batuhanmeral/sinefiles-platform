@@ -160,7 +160,7 @@ export default function ProfilePage() {
           )}
           {/* Sağ bölüm: İstatistikler */}
           <div className="lg:w-[30%] lg:self-stretch lg:border-l lg:border-white/10 lg:pl-6">
-            <div className="grid grid-cols-2 gap-3 text-center">
+            <div className="grid grid-cols-3 gap-3 text-center">
               {/* Sistem listeleri — tıklayınca ilgili listeye gider */}
               {systemLists.map((list) => (
                 <Stat
