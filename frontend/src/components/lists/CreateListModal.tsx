@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { listsApi, type ListSummary, type ListVisibility } from '@/api/lists.api';
+import { useInvalidateLists } from '@/features/list/useInvalidateLists';
 
 // Düzenleme modunda verilen mevcut liste alanları
 export interface EditableList {
@@ -20,7 +21,7 @@ interface Props {
 
 // CUSTOM liste oluşturma/düzenleme modalı (başlık + açıklama + görünürlük).
 export function CreateListModal({ open, onClose, onSaved, editList }: Props) {
-  const qc = useQueryClient();
+  const invalidateLists = useInvalidateLists();
   const isEdit = Boolean(editList);
   const [title, setTitle] = useState(editList?.title ?? '');
   const [description, setDescription] = useState(editList?.description ?? '');
@@ -38,8 +39,7 @@ export function CreateListModal({ open, onClose, onSaved, editList }: Props) {
         : listsApi.createList(payload);
     },
     onSuccess: (list) => {
-      qc.invalidateQueries({ queryKey: ['my-lists'] });
-      qc.invalidateQueries({ queryKey: ['list', list.id] });
+      invalidateLists();
       onSaved?.(list);
       if (!isEdit) reset();
       onClose();

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { listsApi, type MyListSummary } from '@/api/lists.api';
+import { useInvalidateLists } from '@/features/list/useInvalidateLists';
 import { CreateListModal, type EditableList } from '@/components/lists/CreateListModal';
 
 // Liste tipi → görünen etiket
@@ -21,7 +22,7 @@ function typeLabel(type: MyListSummary['type'], title: string): string {
 // Giriş yapan kullanıcının kendi listelerini yönettiği sayfa (/my-lists).
 // Sistem listeleri + oluşturulan CUSTOM listeler; yeni liste oluşturma ve silme.
 export default function MyListsPage() {
-  const qc = useQueryClient();
+  const invalidateLists = useInvalidateLists();
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<EditableList | null>(null);
 
@@ -32,7 +33,7 @@ export default function MyListsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (listId: string) => listsApi.deleteList(listId),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['my-lists'] }),
+    onSuccess: invalidateLists,
   });
 
   return (

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   DndContext,
   closestCenter,
@@ -16,6 +16,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { listsApi } from '@/api/lists.api';
+import { useInvalidateLists } from '@/features/list/useInvalidateLists';
 import { ListHeader } from '@/components/lists/ListHeader';
 import { ListOwnerCard } from '@/components/lists/ListOwnerCard';
 import { SortableListItem } from '@/components/lists/SortableListItem';
@@ -24,7 +25,7 @@ import { SortableListItem } from '@/components/lists/SortableListItem';
 // Liste sahibi öğeleri sürükle-bırak ile yeniden sıralayabilir; herkes beğenebilir/paylaşabilir.
 export default function ListDetailPage() {
   const { listId } = useParams<{ listId: string }>();
-  const queryClient = useQueryClient();
+  const invalidateLists = useInvalidateLists();
 
   const {
     data: list,
@@ -40,25 +41,19 @@ export default function ListDetailPage() {
   const reorderMutation = useMutation({
     mutationFn: (items: { id: string; position: number }[]) =>
       listsApi.reorderListItems(listId!, items),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['list', listId] });
-    },
+    onSuccess: invalidateLists,
   });
 
   // Beğen/beğeniyi kaldır
   const toggleLikeMutation = useMutation({
     mutationFn: () => listsApi.toggleListLike(listId!),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['list', listId] });
-    },
+    onSuccess: invalidateLists,
   });
 
   // Listeden öğe çıkar (yalnızca sahibi)
   const removeItemMutation = useMutation({
     mutationFn: (itemId: string) => listsApi.removeItem(listId!, itemId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['list', listId] });
-    },
+    onSuccess: invalidateLists,
   });
 
   // dnd-kit sensörleri (fare + klavye erişilebilirliği)
